@@ -22,6 +22,10 @@ class GraphBuilder:
             if self.graph.has_edge(sender, receiver):
                 self.graph[sender][receiver]['weight'] += amount
                 self.graph[sender][receiver]['count'] += 1
+                self.graph[sender][receiver]['fraud'] = max(
+                    self.graph[sender][receiver].get('fraud', 0),
+                    is_fraud
+                )
             else:
                 self.graph.add_edge(sender, receiver, weight=amount, count=1, fraud=is_fraud)
             

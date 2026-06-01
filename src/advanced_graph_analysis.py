@@ -9,6 +9,8 @@ class AdvancedGraphAnalysis:
         self.pagerank_scores = {}
         self.communities = {}
         self.community_map = {}
+        self._betweenness = {}
+        self._cycles = set()
     
     def calculate_pagerank(self):
         """Calculate PageRank - identifies most important accounts"""
@@ -44,9 +46,18 @@ class AdvancedGraphAnalysis:
                 community_sizes[comm_id] = 0
             community_sizes[comm_id] += 1
         
-        print(f"\nCommunity sizes:")
-        for comm_id in sorted(community_sizes.keys()):
-            print(f"  Community {comm_id}: {community_sizes[comm_id]} accounts")
+        print(f"\nLargest community sizes:")
+        largest_communities = sorted(
+            community_sizes.items(),
+            key=lambda item: item[1],
+            reverse=True
+        )[:10]
+        for comm_id, size in largest_communities:
+            print(f"  Community {comm_id}: {size} accounts")
+
+        remaining = len(community_sizes) - len(largest_communities)
+        if remaining > 0:
+            print(f"  ... {remaining} smaller communities hidden")
         
         return self.communities
     
@@ -54,6 +65,7 @@ class AdvancedGraphAnalysis:
         """Find bridge accounts (most connected across communities)"""
         print("\n🌉 Calculating betweenness centrality...")
         betweenness = nx.betweenness_centrality(self.graph)
+        self._betweenness = betweenness
         
         sorted_between = sorted(betweenness.items(), key=lambda x: x[1], reverse=True)
         print(f"✓ Top 10 Bridge Accounts (suspicious intermediaries):")
@@ -62,30 +74,37 @@ class AdvancedGraphAnalysis:
         
         return betweenness
     
-    def detect_cycles(self):
+    def detect_cycles(self, max_component_size=25):
         """Detect circular transactions (money laundering pattern)"""
         print("\n♻️  Detecting circular transaction patterns...")
-        
-        cycles = []
-        for node in self.graph.nodes():
-            try:
-                # Check if there's a path back to itself
-                if nx.has_path(self.graph, node, node):
-                    cycles.append(node)
-            except:
-                pass
-        
-        print(f"✓ Found {len(cycles)} accounts involved in cycles")
-        print(f"  (Top 10): {cycles[:10]}")
-        
+
+        cycle_accounts = set()
+        circular_components = []
+
+        for component in nx.strongly_connected_components(self.graph):
+            if len(component) > 1:
+                cycle_accounts.update(component)
+                if len(component) <= max_component_size:
+                    circular_components.append(sorted(component))
+
+        for source, target in nx.selfloop_edges(self.graph):
+            cycle_accounts.add(source)
+
+        self._cycles = cycle_accounts
+        cycles = sorted(cycle_accounts)
+
+        print(f"✓ Found {len(cycles)} accounts involved in circular patterns")
+        print(f"✓ Found {len(circular_components)} small circular components")
+        print(f"  (Top 10 accounts): {cycles[:10]}")
+
         return cycles
     
     def get_fraud_risk_score(self, pagerank_weight=0.3, betweenness_weight=0.3, cycle_weight=0.4):
         """Combine multiple metrics into fraud risk score"""
         print("\n⚠️  Computing comprehensive fraud risk scores...")
         
-        betweenness = self.get_betweenness_centrality() if not hasattr(self, '_betweenness') else self._betweenness
-        cycles = self.detect_cycles() if not hasattr(self, '_cycles') else self._cycles
+        betweenness = self._betweenness or self.get_betweenness_centrality()
+        cycles = self._cycles or self.detect_cycles()
         
         fraud_scores = {}
         
