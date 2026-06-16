@@ -15,7 +15,7 @@
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-F7931E?style=flat-square&logo=scikit-learn&logoColor=white)](https://scikit-learn.org)
 [![NetworkX](https://img.shields.io/badge/NetworkX-Graph%20Analysis-FF6B35?style=flat-square)](https://networkx.org)
 [![Plotly](https://img.shields.io/badge/Plotly-Visualisation-3F4F75?style=flat-square&logo=plotly&logoColor=white)](https://plotly.com)
-[![Status](https://img.shields.io/badge/Status-Week%205%20Complete-brightgreen?style=flat-square)]()
+[![Status](https://img.shields.io/badge/Status-Week%206%20Backend-brightgreen?style=flat-square)]()
 
 *Detecting suspicious financial activity using transaction graphs, rule-based scoring, and baseline machine learning models.*
 
@@ -34,21 +34,21 @@ FinGraph is a university project focused on detecting financial fraud using grap
 
 This makes it possible to study fraud patterns through account relationships, important accounts, suspicious clusters, and transaction behavior.
 
-The project is being developed as a 9-week workflow. Weeks 1-5 are complete. Backend APIs, frontend dashboard, integration, and final documentation are planned for Weeks 6-9.
+The project is being developed as a 9-week workflow. Weeks 1-5 are complete, and Week 6 backend development has started. Frontend dashboard, integration, and final documentation are planned for Weeks 7-9.
 
-Important note: the current system is a **batch analysis and training pipeline**. It is not a real-time production system yet. Real-time or near-real-time use is planned for later stages after backend and frontend integration.
+Important note: the current system is mainly a **batch analysis and training pipeline** with a Week 6 API layer for serving model outputs and single-transaction predictions. It is not a full real-time production system yet.
 
 ---
 
 ## Progress Chart
 
 <p align="center">
-  <img src="docs/assets/progress_chart_week5.png" alt="FinGraph project progress chart showing Week 5 ML model training" width="900">
+  <img src="docs/assets/progress_chart_week6.png" alt="FinGraph project progress chart showing Week 6 backend development" width="900">
 </p>
 
 ---
 
-## Current Week 5 Result
+## Week 5 Results
 
 The Week 5 machine learning pipeline was trained on a 200,000-row sample from the Kaggle transaction dataset.
 
@@ -88,10 +88,11 @@ flowchart LR
     E --> F["ML Feature Preparation"]
     F --> G["Model Training<br/>Logistic Regression, Random Forest"]
     G --> H["Metrics, Predictions & Saved Model"]
-    H --> I["Planned Backend + Dashboard"]
+    H --> I["FastAPI Backend"]
+    I --> J["Planned Frontend Dashboard"]
 ```
 
-The pipeline currently runs in batch mode. Backend APIs and dashboard integration are planned for the next phases.
+The training pipeline runs in batch mode. The Week 6 backend serves saved model artifacts and prediction responses for future dashboard integration.
 
 ---
 
@@ -130,8 +131,10 @@ Open [`advanced_fraud_network.html`](advanced_fraud_network.html) from the repos
 ```text
 FinGraph/
 ├── backend/
-│   ├── app.py                         # Planned for Week 6 backend work
-│   └── routes.py                      # Planned API routes
+│   ├── app.py                         # FastAPI application entry point
+│   ├── routes.py                      # FastAPI route definitions
+│   ├── schemas.py                     # Request and response models
+│   └── services.py                    # Model loading and prediction services
 ├── data/
 │   ├── raw/
 │   │   └── transactions.csv           # Local Kaggle dataset, not pushed to GitHub
@@ -208,9 +211,16 @@ FinGraph/
   - feature importance
   - best trained model
 
-### Week 6-9 Planned Work
+### Week 6 - Backend API Development
 
-- Week 6: Backend API development.
+- Created a FastAPI backend in `backend/app.py`.
+- Added API routes in `backend/routes.py`.
+- Added request and response schemas in `backend/schemas.py`.
+- Added model loading, artifact reading, and prediction services in `backend/services.py`.
+- Exposed endpoints for health checks, model metrics, top predictions, feature importance, and single-transaction prediction.
+
+### Week 7-9 Planned Work
+
 - Week 7: Frontend dashboard.
 - Week 8: Integration and testing.
 - Week 9: Final documentation, report, presentation, and project cleanup.
@@ -287,6 +297,51 @@ Run with a smaller sample:
 
 ```bash
 venv/bin/python src/train_ml_model.py --nrows 50000
+```
+
+---
+
+## Backend API
+
+Week 6 adds a FastAPI backend that loads the Week 5 model artifacts and exposes JSON endpoints for frontend/dashboard use.
+
+Run the backend:
+
+```bash
+venv/bin/uvicorn backend.app:app --reload
+```
+
+Open the automatic API documentation:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+Available endpoints:
+
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| GET | `/` | Project and model summary |
+| GET | `/health` | Checks model, metrics, predictions, and feature-importance files |
+| GET | `/metrics` | Returns Week 5 model evaluation metrics |
+| GET | `/predictions/top` | Returns top model predictions |
+| GET | `/features/importance` | Returns feature importance rankings |
+| POST | `/predict` | Predicts fraud probability for one transaction |
+
+Example prediction request:
+
+```json
+{
+  "step": 1,
+  "type": "TRANSFER",
+  "amount": 2806.0,
+  "oldbalanceOrg": 2806.0,
+  "newbalanceOrig": 0.0,
+  "oldbalanceDest": 0.0,
+  "newbalanceDest": 0.0,
+  "nameOrig": "C1420196421",
+  "nameDest": "C972765878"
+}
 ```
 
 ---
@@ -380,4 +435,3 @@ Planned:
 - integration and testing
 - final documentation and report
 - possible GNN model experiments
-

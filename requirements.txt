@@ -5,3 +5,6 @@ networkx
 python-louvain
 plotly
 pytest
+fastapi
+uvicorn
+httpx
