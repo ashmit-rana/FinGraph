@@ -1,6 +1,7 @@
 import pandas as pd
 import plotly.graph_objects as go
 import networkx as nx
+from pathlib import Path
 from graph_builder import GraphBuilder
 from fraud_detector import FraudDetector
 
@@ -53,5 +54,8 @@ fig = go.Figure(data=[edge_trace, node_trace])
 fig.update_layout(title='Suspicious Account Network', showlegend=False,
     hovermode='closest', margin=dict(b=20, l=5, r=5, t=40))
 
-fig.write_html('suspicious_network.html')
-print("✓ Visualization saved to suspicious_network.html")
+output_dir = Path('outputs/visualizations')
+output_dir.mkdir(parents=True, exist_ok=True)
+output_file = output_dir / 'suspicious_network.html'
+fig.write_html(output_file)
+print(f"✓ Visualization saved to {output_file}")

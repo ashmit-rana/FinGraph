@@ -1,5 +1,10 @@
 import pandas as pd
 import plotly.express as px
+from pathlib import Path
+
+
+output_dir = Path('outputs/visualizations')
+output_dir.mkdir(parents=True, exist_ok=True)
 
 # Load data
 df = pd.read_csv('data/raw/transactions.csv')
@@ -12,13 +17,15 @@ fig = px.bar(
     title='Transaction Distribution: Legitimate vs Fraud',
     labels={'x': 'Type', 'y': 'Count'}
 )
-fig.write_html('fraud_distribution.html')
-print("✓ Visualization saved to fraud_distribution.html")
+fraud_distribution_path = output_dir / 'fraud_distribution.html'
+fig.write_html(fraud_distribution_path)
+print(f"✓ Visualization saved to {fraud_distribution_path}")
 
 # Transaction types
 fig2 = px.bar(
     df['type'].value_counts(),
     title='Transactions by Type'
 )
-fig2.write_html('transaction_types.html')
-print("✓ Visualization saved to transaction_types.html")
+transaction_types_path = output_dir / 'transaction_types.html'
+fig2.write_html(transaction_types_path)
+print(f"✓ Visualization saved to {transaction_types_path}")

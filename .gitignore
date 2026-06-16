@@ -6,5 +6,6 @@ __pycache__/
 data/raw/
 data/processed/
 models/
+outputs/
 *.pkl
 node_modules/.venv/

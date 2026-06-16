@@ -1,6 +1,7 @@
 import pandas as pd
 import plotly.graph_objects as go
 import networkx as nx
+from pathlib import Path
 from graph_builder import GraphBuilder
 from advanced_graph_analysis import AdvancedGraphAnalysis
 import random
@@ -151,7 +152,9 @@ fig.update_layout(
 )
 
 # Save
-output_file = 'advanced_fraud_network.html'
+output_dir = Path('outputs/visualizations')
+output_dir.mkdir(parents=True, exist_ok=True)
+output_file = output_dir / 'advanced_fraud_network.html'
 fig.write_html(output_file)
 print(f"\n✅ Visualization saved to {output_file}")
 print(f"\n📊 KEY INSIGHTS:")

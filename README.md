@@ -100,7 +100,7 @@ The training pipeline runs in batch mode. The Week 6 backend serves saved model 
 
 | Area | Output | Purpose |
 |------|--------|---------|
-| Graph visualisation | `advanced_fraud_network.html` | Interactive network view with account communities and PageRank sizing |
+| Graph visualisation | `outputs/visualizations/advanced_fraud_network.html` | Local interactive network view with account communities and PageRank sizing |
 | Week 4 fraud logic | `week4_suspicious_transactions.csv` | Ranked suspicious transactions with explainable reasons |
 | Week 4 account ranking | `week4_suspicious_accounts.csv` | High-risk accounts based on graph and transaction behavior |
 | Week 5 ML metrics | `week5_model_metrics.json` | Model performance, confusion matrix, and evaluation details |
@@ -117,12 +117,20 @@ Generated data and model files are kept local and ignored by GitHub.
 The project includes an interactive Plotly network visualisation generated during Week 3. It shows account communities using different colors, scales nodes using PageRank importance, and marks circular transaction involvement using diamond-shaped nodes.
 
 <p align="center">
-  <a href="advanced_fraud_network.html">
-    <img src="docs/assets/advanced_fraud_network_preview.png" alt="FinGraph advanced fraud network visualisation preview" width="900">
-  </a>
+  <img src="docs/assets/advanced_fraud_network_preview.png" alt="FinGraph advanced fraud network visualisation preview" width="900">
 </p>
 
-Open [`advanced_fraud_network.html`](advanced_fraud_network.html) from the repository or locally in a browser to inspect the interactive version.
+Generate the interactive version locally:
+
+```bash
+python3 src/visualize_advanced_graph.py
+```
+
+Then open:
+
+```text
+outputs/visualizations/advanced_fraud_network.html
+```
 
 ---
 
@@ -187,7 +195,7 @@ FinGraph/
 - Added PageRank to identify important accounts in the transaction network.
 - Added Louvain community detection to find account clusters.
 - Added circular pattern detection to check for possible money movement loops.
-- Created interactive Plotly visualisations such as `advanced_fraud_network.html`.
+- Created interactive Plotly visualisations such as `outputs/visualizations/advanced_fraud_network.html`.
 
 ### Week 4 - Rule-Based Fraud Detection Logic
 
