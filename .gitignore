@@ -8,4 +8,5 @@ data/processed/
 models/
 outputs/
 *.pkl
-node_modules/.venv/
+node_modules/
+dist/

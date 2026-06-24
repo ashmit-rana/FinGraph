@@ -3,7 +3,7 @@ from graph_builder import GraphBuilder
 from advanced_graph_analysis import AdvancedGraphAnalysis
 
 print("Loading data...")
-df = pd.read_csv('data/raw/transactions.csv', nrows=50000)  # Smaller for speed
+df = pd.read_csv('data/raw/transactions.csv', nrows=1000000)  # Smaller for speed
 
 print("Building graph...")
 builder = GraphBuilder()

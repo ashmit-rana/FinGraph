@@ -6,7 +6,7 @@ from graph_builder import GraphBuilder
 from fraud_detector import FraudDetector
 
 # Load and build
-df = pd.read_csv('data/raw/transactions.csv', nrows=50000)
+df = pd.read_csv('data/raw/transactions.csv', nrows=1000000)
 builder = GraphBuilder()
 graph = builder.build_from_transactions(df)
 

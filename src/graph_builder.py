@@ -29,8 +29,9 @@ class GraphBuilder:
             else:
                 self.graph.add_edge(sender, receiver, weight=amount, count=1, fraud=is_fraud)
             
-            if idx % 500000 == 0 and idx > 0:
-                print(f"Processed {idx} transactions...")
+                processed = idx + 1
+                if processed % 500000 == 0:
+                   print(f"Processed {processed:,} transactions...")
         
         print(f"\n✓ Graph built: {self.graph.number_of_nodes()} accounts")
         print(f"✓ Edges: {self.graph.number_of_edges()} transactions")

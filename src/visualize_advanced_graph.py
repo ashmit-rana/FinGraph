@@ -7,7 +7,7 @@ from advanced_graph_analysis import AdvancedGraphAnalysis
 import random
 
 print("Loading data...")
-df = pd.read_csv('data/raw/transactions.csv', nrows=50000)
+df = pd.read_csv('data/raw/transactions.csv', nrows=1000000)
 
 print("Building graph...")
 builder = GraphBuilder()
