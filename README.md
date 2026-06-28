@@ -14,10 +14,12 @@
 [![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-F7931E?style=flat-square&logo=scikit-learn&logoColor=white)](https://scikit-learn.org)
 [![NetworkX](https://img.shields.io/badge/NetworkX-Graph%20Analysis-FF6B35?style=flat-square)](https://networkx.org)
-[![Plotly](https://img.shields.io/badge/Plotly-Visualisation-3F4F75?style=flat-square&logo=plotly&logoColor=white)](https://plotly.com)
-[![Status](https://img.shields.io/badge/Status-Week%206%20Backend-brightgreen?style=flat-square)]()
+[![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![React](https://img.shields.io/badge/React-Frontend-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-Build-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vite.dev)
+[![Status](https://img.shields.io/badge/Status-Week%208%20Integration-brightgreen?style=flat-square)]()
 
-*Detecting suspicious financial activity using transaction graphs, rule-based scoring, and baseline machine learning models.*
+*Detecting suspicious financial activity using transaction graphs, rule-based scoring, and baseline machine learning models — with a professional risk operations dashboard.*
 
 </div>
 
@@ -34,16 +36,14 @@ FinGraph is a university project focused on detecting financial fraud using grap
 
 This makes it possible to study fraud patterns through account relationships, important accounts, suspicious clusters, and transaction behavior.
 
-The project is being developed as a 9-week workflow. Weeks 1-5 are complete, and Week 6 backend development has started. Frontend dashboard, integration, and final documentation are planned for Weeks 7-9.
-
-Important note: the current system is mainly a **batch analysis and training pipeline** with a Week 6 API layer for serving model outputs and single-transaction predictions. It is not a full real-time production system yet.
+The project is being developed as a 9-week workflow. Weeks 1-8 are complete, and Week 9 (deployment, final documentation, and report) is planned next. The system now includes a full-stack application with a FastAPI backend serving ML model predictions and a React-based fraud investigation dashboard.
 
 ---
 
 ## Progress Chart
 
 <p align="center">
-  <img src="docs/assets/progress_chart_week6.png" alt="FinGraph project progress chart showing Week 6 backend development" width="900">
+  <img src="docs/assets/progress_chart_week8.png" alt="FinGraph project progress chart showing Week 8 integration and testing" width="900">
 </p>
 
 ---
@@ -89,10 +89,45 @@ flowchart LR
     F --> G["Model Training<br/>Logistic Regression, Random Forest"]
     G --> H["Metrics, Predictions & Saved Model"]
     H --> I["FastAPI Backend"]
-    I --> J["Planned Frontend Dashboard"]
+    I --> J["React Dashboard"]
 ```
 
-The training pipeline runs in batch mode. The Week 6 backend serves saved model artifacts and prediction responses for future dashboard integration.
+The training pipeline runs in batch mode. The backend serves saved model artifacts and prediction responses. The React dashboard connects to the API for live data and single-transaction scoring.
+
+---
+
+## Frontend Dashboard
+
+The Week 7-8 frontend is a professional fraud investigation and risk operations dashboard built with React + Vite. It is inspired by fraud tools such as Stripe Radar, Sift, and Sardine.
+
+### Dashboard Pages
+
+| Page | Purpose |
+|------|---------|
+| **Overview** | 9 KPI cards showing transactions, fraud count, precision, recall, false positives, missed fraud, avg risk score, and review queue |
+| **Risk Queue** | Sortable transaction table with risk badges, balance error flags, fraud labels, and inline Approve/Review/Block actions. Click any row for a detailed slide-in panel |
+| **Transaction Scoring** | Guided prediction form with 4 presets (Normal Payment, Suspicious Transfer, Account Emptied, Cash-out Pattern). POSTs to `/predict` and shows fraud probability, risk gauge, triggered signals, and recommended action |
+| **Graph Intelligence** | Canvas-based network visualization showing accounts as nodes and transactions as edges, color-coded by fraud status and risk level |
+| **Model Performance** | Random Forest vs Logistic Regression comparison with metric pills, confusion matrices with plain-English explanations, and feature importance bar chart |
+| **Rules & Signals** | 6 rule cards explaining each fraud signal with conditions and severity. Interactive Rule Simulator evaluates rules live as inputs change |
+| **Case Review** | Analyst decision tracking table with filter tabs (All/Approved/In Review/Blocked) and clear-all functionality |
+
+### Design
+
+- Dark-themed professional UI with risk-coded colors (green/amber/red/violet)
+- Responsive layout: sidebar navigation on desktop, collapsed horizontal nav on mobile
+- Slide-in transaction detail panel with risk gauge, balance flow, triggered signals, and analyst action buttons
+- "API offline" banner when backend is unreachable, with automatic fallback to sample data
+
+### Running the Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173` in your browser.
 
 ---
 
@@ -149,7 +184,21 @@ FinGraph/
 │   └── processed/                     # Generated outputs, not pushed to GitHub
 ├── frontend/
 │   └── src/
-│       └── App.js                     # Planned for Week 7 frontend work
+│       ├── App.jsx                    # Root component, context provider, data hooks
+│       ├── App.js                     # Re-export for module compatibility
+│       ├── styles.css                 # Complete dark-themed design system
+│       ├── components/
+│       │   ├── Sidebar.jsx            # Left navigation with 7 page links
+│       │   ├── TopHeader.jsx          # API/model status header bar
+│       │   └── TransactionDetail.jsx  # Slide-in transaction detail panel
+│       └── pages/
+│           ├── Overview.jsx           # KPI cards dashboard
+│           ├── RiskQueue.jsx          # Transaction risk table + detail panel
+│           ├── TransactionScoring.jsx # Guided prediction form with presets
+│           ├── GraphIntelligence.jsx  # Canvas network visualization
+│           ├── ModelPerformance.jsx   # Model comparison and validation
+│           ├── RulesSignals.jsx       # Rule explanations and simulator
+│           └── CaseReview.jsx         # Analyst decision tracking
 ├── models/                            # Saved ML models, not pushed to GitHub
 ├── notebooks/
 │   ├── 01_exploration.ipynb
@@ -167,6 +216,8 @@ FinGraph/
 ├── tests/
 │   ├── test_fraud_detector.py
 │   └── test_ml_model_training.py
+├── docs/
+│   └── assets/                        # Progress charts and screenshots
 ├── README.md
 └── requirements.txt
 ```
@@ -175,21 +226,21 @@ FinGraph/
 
 ## Weekly Progress
 
-### Week 1 - Research And Setup
+### Week 1 — Research And Setup
 
 - Finalized the project idea: financial fraud detection using graph analysis and later GNN concepts.
 - Selected the Kaggle online payment fraud detection dataset.
 - Created the project structure with folders for backend, frontend, data, notebooks, source code, and tests.
 - Started basic dataset exploration using `src/data_loader.py`.
 
-### Week 2 - Data Cleaning And Graph Construction
+### Week 2 — Data Cleaning And Graph Construction
 
 - Created `DataCleaner` in `src/data_cleaner.py` for loading data, checking missing values, removing duplicates, filtering invalid amounts, and handling outliers.
 - Created `GraphBuilder` in `src/graph_builder.py`.
 - Converted transactions into a directed NetworkX graph where senders and receivers are nodes.
 - Stored amount, transaction count, and fraud label information on graph edges.
 
-### Week 3 - Advanced Graph Analysis
+### Week 3 — Advanced Graph Analysis
 
 - Created `AdvancedGraphAnalysis` in `src/advanced_graph_analysis.py`.
 - Added PageRank to identify important accounts in the transaction network.
@@ -197,7 +248,7 @@ FinGraph/
 - Added circular pattern detection to check for possible money movement loops.
 - Created interactive Plotly visualisations such as `outputs/visualizations/advanced_fraud_network.html`.
 
-### Week 4 - Rule-Based Fraud Detection Logic
+### Week 4 — Rule-Based Fraud Detection Logic
 
 - Expanded `FraudDetector` in `src/fraud_detector.py`.
 - Added transaction-level fraud risk scoring.
@@ -205,7 +256,7 @@ FinGraph/
 - Added suspicious account ranking.
 - Exported fraud results as CSV and JSON for future backend and dashboard use.
 
-### Week 5 - Machine Learning Model Training
+### Week 5 — Machine Learning Model Training
 
 - Created `src/train_ml_model.py`.
 - Prepared ML features from transaction columns and engineered fraud indicators.
@@ -219,7 +270,7 @@ FinGraph/
   - feature importance
   - best trained model
 
-### Week 6 - Backend API Development
+### Week 6 — Backend API Development
 
 - Created a FastAPI backend in `backend/app.py`.
 - Added API routes in `backend/routes.py`.
@@ -227,11 +278,34 @@ FinGraph/
 - Added model loading, artifact reading, and prediction services in `backend/services.py`.
 - Exposed endpoints for health checks, model metrics, top predictions, feature importance, and single-transaction prediction.
 
-### Week 7-9 Planned Work
+### Week 7 — Frontend Dashboard
 
-- Week 7: Frontend dashboard.
-- Week 8: Integration and testing.
-- Week 9: Final documentation, report, presentation, and project cleanup.
+- Built a React + Vite frontend application.
+- Created the initial dashboard UI with basic data visualization.
+- Connected frontend to the FastAPI backend for live data fetching.
+- Added health check polling and data source status indicators.
+
+### Week 8 — Integration, Testing & Dashboard Redesign
+
+- Redesigned the entire frontend into a professional fraud investigation and risk operations dashboard.
+- Created a component-based architecture with React Context for shared state management.
+- Built 7 distinct workflow pages: Overview, Risk Queue, Transaction Scoring, Graph Intelligence, Model Performance, Rules & Signals, and Case Review.
+- Implemented a dark-themed design system with risk-coded color palette (green/amber/red/violet).
+- Added interactive features:
+  - Slide-in transaction detail panel with risk gauge, balance flow analysis, and triggered signals.
+  - Guided prediction form with 4 fraud scenario presets.
+  - Canvas-based network graph visualization.
+  - Interactive rule simulator with live evaluation.
+  - Case management with filter tabs and analyst decision tracking.
+- Added offline mode with fallback data and "API offline" banner.
+- Verified build succeeds with zero errors (1583 modules transformed).
+
+### Week 9 — Planned Work
+
+- Final deployment and hosting.
+- Project documentation and report.
+- Presentation preparation.
+- Project cleanup.
 
 ---
 
@@ -267,15 +341,44 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-Install dependencies:
+Install Python dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
+Install frontend dependencies:
+
+```bash
+cd frontend
+npm install
+cd ..
+```
+
 ---
 
 ## How To Run
+
+### Full Stack (Backend + Frontend)
+
+Start the backend:
+
+```bash
+venv/bin/uvicorn backend.app:app --reload
+```
+
+In a separate terminal, start the frontend:
+
+```bash
+cd frontend
+npm run dev
+```
+
+Open `http://localhost:5173` in your browser.
+
+Open the API documentation at `http://127.0.0.1:8000/docs`.
+
+### Earlier Week Scripts
 
 Run Week 3 graph analysis:
 
@@ -295,12 +398,6 @@ Run Week 5 ML training:
 python3 src/train_ml_model.py
 ```
 
-Using the existing project virtual environment:
-
-```bash
-venv/bin/python src/train_ml_model.py
-```
-
 Run with a smaller sample:
 
 ```bash
@@ -311,19 +408,7 @@ venv/bin/python src/train_ml_model.py --nrows 50000
 
 ## Backend API
 
-Week 6 adds a FastAPI backend that loads the Week 5 model artifacts and exposes JSON endpoints for frontend/dashboard use.
-
-Run the backend:
-
-```bash
-venv/bin/uvicorn backend.app:app --reload
-```
-
-Open the automatic API documentation:
-
-```text
-http://127.0.0.1:8000/docs
-```
+The FastAPI backend loads the Week 5 model artifacts and exposes JSON endpoints for the dashboard.
 
 Available endpoints:
 
@@ -416,9 +501,9 @@ Rule-based detection is explainable. It helps create clear fraud reasons before 
 
 Random Forest performed better than Logistic Regression on the current Week 5 sample. Logistic Regression caught fraud cases but produced many false positives. Random Forest gave a stronger balance between precision and recall.
 
-### Why Not Real-Time Yet?
+### Why a Professional Dashboard?
 
-The current system loads data, trains models, and saves outputs in batch mode. Real-time prediction needs backend APIs and frontend integration, which are planned for Weeks 6 and 7.
+A fraud detection model is only useful if analysts can interact with it. The Week 8 dashboard redesign transforms raw model outputs into an actionable investigation workspace with risk scoring, case management, and interactive rule simulation.
 
 ---
 
@@ -435,11 +520,14 @@ Completed:
 - suspicious transaction and account exports
 - baseline ML model training
 - model metrics and prediction exports
+- FastAPI backend API
+- React frontend dashboard
+- dashboard redesign with 7 workflow pages
+- integration and testing
 
 Planned:
 
-- backend API
-- frontend dashboard
-- integration and testing
-- final documentation and report
+- final deployment and hosting
+- documentation and report
+- presentation
 - possible GNN model experiments
