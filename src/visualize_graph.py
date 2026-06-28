@@ -1,12 +1,16 @@
 import pandas as pd
+import os
 import plotly.graph_objects as go
 import networkx as nx
 from pathlib import Path
 from graph_builder import GraphBuilder
 from fraud_detector import FraudDetector
 
+ROW_LIMIT = int(os.getenv("FINGRAPH_ROW_LIMIT", "200000"))
+
 # Load and build
-df = pd.read_csv('data/raw/transactions.csv', nrows=1000000)
+df = pd.read_csv('data/raw/transactions.csv', nrows=ROW_LIMIT)
+print(f"Loaded {len(df):,} rows")
 builder = GraphBuilder()
 graph = builder.build_from_transactions(df)
 

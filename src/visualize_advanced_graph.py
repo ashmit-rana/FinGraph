@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 import plotly.graph_objects as go
 import networkx as nx
 from pathlib import Path
@@ -6,8 +7,11 @@ from graph_builder import GraphBuilder
 from advanced_graph_analysis import AdvancedGraphAnalysis
 import random
 
+ROW_LIMIT = int(os.getenv("FINGRAPH_ROW_LIMIT", "200000"))
+
 print("Loading data...")
-df = pd.read_csv('data/raw/transactions.csv', nrows=1000000)
+df = pd.read_csv('data/raw/transactions.csv', nrows=ROW_LIMIT)
+print(f"Loaded {len(df):,} rows")
 
 print("Building graph...")
 builder = GraphBuilder()
