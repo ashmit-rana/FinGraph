@@ -12,7 +12,7 @@ def get_summary():
     metrics = artifact_store.load_metrics() if artifact_store.metrics_available() else {}
     return {
         "project": "FinGraph",
-        "current_week": "Week 6 - Backend Development",
+        "current_week": "Week 8 - Integration & Testing",
         "backend_status": "FastAPI backend running",
         "best_model": metrics.get("best_model"),
         "sample_rows": metrics.get("sample_rows"),
